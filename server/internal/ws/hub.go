@@ -1,5 +1,7 @@
 package ws
 
+import "fmt"
+
 type Hub struct {
 	// Registered clients.
 	clients map[*Client]bool
@@ -27,9 +29,12 @@ func (h *Hub) Run() {
 	for {
 		select {
 		case client := <-h.register:
+			fmt.Println("Client connected")
 			h.clients[client] = true
 		case client := <-h.unregister:
 			if _, ok := h.clients[client]; ok {
+
+				fmt.Println("Client disconnected")
 				delete(h.clients, client)
 				close(client.send)
 			}
